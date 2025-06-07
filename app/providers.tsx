@@ -3,25 +3,25 @@
 
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, createConfig, http } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import React from 'react'; // Impor React untuk menggunakan tipe React.ReactNode
+import React from 'react'; 
 
-// Dapatkan projectId dari https://cloud.walletconnect.com/
-const projectId = 'MASUKKAN_PROJECT_ID_WALLETCONNECT_ANDA'; 
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!; 
 
 const config = getDefaultConfig({
   appName: 'CryptoArt',
   projectId: projectId,
   chains: [sepolia],
-  ssr: true,
+  transports: {
+    [sepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_URL),
+  },
+  ssr: true, 
 });
 
 const queryClient = new QueryClient();
 
-//           TAMBAHKAN TIPE UNTUK CHILDREN DI SINI
-//                     vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
